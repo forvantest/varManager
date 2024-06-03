@@ -144,7 +144,7 @@ namespace varManager
                     if (File.Exists(destvarfilename))
                     {
                         string errlog = $"{varfile} has same filename in tidy directory,moved into the {redundantDirName} directory";
-                        this.BeginInvoke(addlog, new Object[] { errlog, LogLevel.ERROR });
+                        this.BeginInvoke(addlog, new Object[] { errlog ,LogLevel.ERROR});
                         string redundantfilename = Path.Combine(redundantpath, Path.GetFileName(varfile));
 
                         int count = 1;
@@ -176,7 +176,7 @@ namespace varManager
                         }
                         catch (Exception ex)
                         {
-                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}", LogLevel.ERROR });
+                            this.BeginInvoke(addlog, new Object[] { $"move {varfile} failed, {ex.Message}" ,LogLevel.ERROR });
                         }
                         //OpenAsZip(destvarfilename);
                     }
@@ -301,7 +301,7 @@ namespace varManager
             }
             return dependenciesList;
         }
-
+        
         private bool Varislatest(string varname)
         {
             bool latest = true;
@@ -373,14 +373,14 @@ namespace varManager
                     varnames.Add(row.varName);
                 }
             }
-
+            
             return varnames;
         }
         private List<string> DependentSaved(string varname)
         {
             List<string> saveds = new List<string>();
             varManagerDataSet.savedepensDataTable savedepens = new varManagerDataSet.savedepensDataTable();
-
+            
             if (Varislatest(varname))
             {
                 string latest = varname.Substring(0, varname.LastIndexOf('.')) + ".latest";
@@ -400,7 +400,7 @@ namespace varManager
             {
                 saveds.Add(row.savepath);
             }
-            saveds = saveds.Distinct().ToList();
+            saveds= saveds.Distinct().ToList();
             return saveds;
         }
         private List<string> ImplicatedVars(List<string> varnames)
@@ -439,7 +439,7 @@ namespace varManager
 
         private void DelePreviewPics(string varname)
         {
-            string[] typenames = { "scenes", "looks", "hairstyle", "clothing", "assets", "morphs", "skin", "pose" };
+            string[] typenames = { "scenes", "looks", "hairstyle", "clothing", "assets","morphs","skin","pose"};
             foreach (string typename in typenames)
             {
                 string typepath = Path.Combine(Settings.Default.varspath, previewpicsDirName, typename, varname);
@@ -594,12 +594,12 @@ namespace varManager
             //varsViewBindingSource.ResetBindings(true);
             InvokeUpdateVarsViewDataGridView invokeUpdateVarsViewDataGridView = new InvokeUpdateVarsViewDataGridView(UpdateVarsViewDataGridView);
             this.BeginInvoke(invokeUpdateVarsViewDataGridView);
-
+            
             //varsViewDataGridView.Update();
         }
         private Mutex mutex;
         private System.Threading.Mutex mut = new Mutex();
-
+      
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Text = "VarManager  v" + Assembly.GetEntryAssembly().GetName().Version.ToString();
@@ -615,7 +615,7 @@ namespace varManager
             // TODO: 这行代码将数据加载到表“varManagerDataSet.installStatus”中。您可以根据需要移动或删除它。
             //this.installStatusTableAdapter.DeleteAll();
             mutex = new System.Threading.Mutex();
-
+            
             backgroundWorkerInstall.RunWorkerAsync("FillDataTables");
             //
             string varspath = new DirectoryInfo(Settings.Default.varspath).FullName.ToLower();
@@ -628,7 +628,7 @@ namespace varManager
                 OpenSetting();
             }
             comboBoxPreviewType.SelectedIndex = 0;
-
+           
 
 
             DirectoryInfo dipacksswitch = Directory.CreateDirectory(packsSwitchpath);
@@ -707,23 +707,23 @@ namespace varManager
                 buttonUpdDB.Focus();
             }
         }
-
+        
         private void FillDataTables()
         {
             this.BeginInvoke(addlog, new Object[] { $"load vars...", LogLevel.INFO });
             // TODO: 这行代码将数据加载到表“varManagerDataSet.vars”中。您可以根据需要移动或删除它。
-            this.varsTableAdapter.Fill(this.varManagerDataSet.vars);
+            this.varsTableAdapter.Fill(this.varManagerDataSet.vars); 
             this.BeginInvoke(addlog, new Object[] { $"load scenes...", LogLevel.INFO });
             // TODO: 这行代码将数据加载到表“varManagerDataSet.scenes”中。您可以根据需要移动或删除它。
             this.scenesTableAdapter.Fill(this.varManagerDataSet.scenes);
             this.BeginInvoke(addlog, new Object[] { $"load dependencies...", LogLevel.INFO });
             // TODO: 这行代码将数据加载到表“varManagerDataSet.dependencies”中。您可以根据需要移动或删除它。
             this.dependenciesTableAdapter.Fill(this.varManagerDataSet.dependencies);
-
+            
         }
 
         public delegate void InvokeUpdateVarsViewDataGridView();
-
+        
         public void UpdateVarsViewDataGridView()
         {
             List<string> selectedRowList = new List<string>();
@@ -777,11 +777,11 @@ namespace varManager
             {
                 int progressvalue = (int)((float)cur * 100 / (float)total);
                 if (progressvalue < 0) progressvalue = 0;
-                if (progressvalue > 100) progressvalue = 100;
+                if (progressvalue >100) progressvalue = 100;
 
                 progressBar1.Value = progressvalue;
             }
-
+               
         }
 
         public delegate void InvokeShowformMissingVars(List<string> missingvars);
@@ -836,7 +836,7 @@ namespace varManager
                     }
                     varsrow = varManagerDataSet.vars.NewvarsRow();
                     varsrow.varName = basename;
-
+                    
                     string[] varnamepart = basename.Split('.');
                     if (varnamepart.Length == 3)
                     {
@@ -1268,7 +1268,7 @@ namespace varManager
                 thread3.Join();
                 */
                 FillDataTables();
-            }
+            } 
             if ((string)e.Argument == "UpdDB")
             {
                 TidyVars();
@@ -1294,7 +1294,7 @@ namespace varManager
             if ((string)e.Argument == "rebuildLink")
             {
                 FixRebuildLink();
-            }
+            } 
             if ((string)e.Argument == "fixPreview")
             {
                 FixPreview();
@@ -1357,7 +1357,7 @@ namespace varManager
                 backgroundWorkerInstall.RunWorkerAsync("MissingDepends");
             }
         }
-
+        
         private void MissingDepends()
         {
             this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
@@ -1374,7 +1374,7 @@ namespace varManager
                 if (varexistname.EndsWith("$"))
                 {
                     varexistname = varexistname.Substring(0, varexistname.Length - 1);
-                    missingvars.Add(varname + "$");
+                    missingvars.Add(varname+"$");
                     this.BeginInvoke(addlog, new Object[] { varname + " missing version", LogLevel.INFO });
                 }
                 if (varexistname != "missing")
@@ -1401,14 +1401,14 @@ namespace varManager
             this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
             List<string> dependencies = new List<string>();
             System.Collections.IList listDatarow = varsViewBindingSource.List;
-
+            
             foreach (DataRowView varrowview in listDatarow)
             {
                 dependencies.AddRange(varManagerDataSet.dependencies.Where(q => q.varName == varrowview.Row.Field<string>("varName")).Select(q => q.dependency));
                 //dependencies.Add(varrowview.Row.Field<string>("varName"));
                 //dependencies.AddRange(varManagerDataSet.dependencies.Where(q => q.varName == varrow.varName).Select(q => q.dependency));
             }
-
+            
             dependencies = dependencies.Distinct().ToList();
             List<string> missingvars = new List<string>();
             foreach (string varname in dependencies)
@@ -1417,7 +1417,7 @@ namespace varManager
                 if (varexistname.EndsWith("$"))
                 {
                     varexistname = varexistname.Substring(0, varexistname.Length - 1);
-                    missingvars.Add(varname + "$");
+                    missingvars.Add(varname+"$");
                     this.BeginInvoke(addlog, new Object[] { varname + " missing version", LogLevel.INFO });
                 }
                 if (varexistname != "missing")
@@ -1453,14 +1453,14 @@ namespace varManager
                 backgroundWorkerInstall.RunWorkerAsync("AllMissingDepends");
             }
         }
-        public void AllMissingDepends()
+        public  void AllMissingDepends()
         {
             this.BeginInvoke(addlog, new Object[] { "Search for dependencies...", LogLevel.INFO });
 
             List<string> missingvars = MissingDependencies();
             if (missingvars.Count > 0)
             {
-                this.BeginInvoke(addlog, new Object[] { $"Total {missingvars.Count} dependencies missing", LogLevel.INFO });
+                this.BeginInvoke(addlog, new Object[] { $"Total { missingvars.Count } dependencies missing", LogLevel.INFO });
                 InvokeShowformMissingVars showformMissingVars = new InvokeShowformMissingVars(ShowformMissingVars);
                 this.BeginInvoke(showformMissingVars, missingvars);
             }
@@ -1544,7 +1544,7 @@ namespace varManager
                 if (File.Exists(destvarfile))
                 {
                     //using (ZipArchive varzipfile = ZipFile.OpenRead(destvarfile))
-                    using (ZipFile varzipfile = new ZipFile(destvarfile))
+                    using (ZipFile varzipfile = new  ZipFile(destvarfile))
                     {
                         string jpgfile = scenerow.scenePath.Substring(0, scenerow.scenePath.LastIndexOf('.')) + ".jpg";
                         var jpg = varzipfile.GetEntry(jpgfile);
@@ -1553,7 +1553,7 @@ namespace varManager
                             string picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, scenerow.atomType, scenerow.varName, scenerow.previewPic);
 
                             string jpgdirectory = Path.GetDirectoryName(picpath);
-                            if (!Directory.Exists(jpgdirectory))
+                            if(!Directory.Exists(jpgdirectory))
                                 Directory.CreateDirectory(jpgdirectory);
                             if (!File.Exists(picpath))
                             {
@@ -1586,7 +1586,7 @@ namespace varManager
         }
         private void FixPreview()
         {
-            foreach (varManagerDataSet.scenesRow scenerow in this.varManagerDataSet.scenes.Where(q => !string.IsNullOrEmpty(q.previewPic)))
+            foreach (varManagerDataSet.scenesRow scenerow in this.varManagerDataSet.scenes.Where(q=> !string.IsNullOrEmpty(q.previewPic)))
             {
                 string picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, scenerow.atomType, scenerow.varName, scenerow.previewPic);
                 if (!File.Exists(picpath))
@@ -1601,7 +1601,7 @@ namespace varManager
                     }
                 }
             }
-
+           
         }
         private void FixSavseDependencies()
         {
@@ -1618,7 +1618,7 @@ namespace varManager
                 string savepath = jsonfile.Substring(Settings.Default.vampath.Length);
                 if (savepath.Length > 255) savepath = savepath.Substring(savepath.Length - 255);
 
-                this.BeginInvoke(addlog, new Object[] { $"Analyze {Path.GetFileName(jsonfile)} ...", LogLevel.INFO });
+                this.BeginInvoke(addlog, new Object[] { $"Analyze { Path.GetFileName(jsonfile)} ...", LogLevel.INFO });
 
                 var rows = this.varManagerDataSet.savedepens.Where(q => q.savepath == savepath && Math.Abs((q.modidate - fi.LastWriteTime).TotalSeconds) <= 2);
 
@@ -1799,7 +1799,7 @@ namespace varManager
             }
             return varrealver;
         }
-        public string GetClosestMatchingPackageVersion(string creatorName, string packageName, int requestVersion)
+        public string GetClosestMatchingPackageVersion(string creatorName,string packageName,int requestVersion)
         {
             //int num = -1;
             var packs = varManagerDataSet.vars.Where(q => q.creatorName == creatorName && q.packageName == packageName).OrderBy(q => q.version);
@@ -1813,11 +1813,11 @@ namespace varManager
                         return pack.varName;
                     }
                 }
-                return packs.Last().varName;
+               return packs.Last().varName;
 
             }
             return "missing";
-
+           
         }
         private List<string> VarsDependencies(string varname)
         {
@@ -2037,7 +2037,7 @@ namespace varManager
             string key = "vam.png";
             if (!string.IsNullOrWhiteSpace(curpriviewpic.Picpath))
             {
-                string picpath = Path.Combine(Settings.Default.varspath, previewpicsDirName, curpriviewpic.Atomtype, curpriviewpic.Varname, curpriviewpic.Picpath);
+                string picpath= Path.Combine(Settings.Default.varspath, previewpicsDirName, curpriviewpic.Atomtype, curpriviewpic.Varname, curpriviewpic.Picpath);
                 if (File.Exists(picpath))
                     key = picpath;
                 else
@@ -2053,7 +2053,7 @@ namespace varManager
                 if (imageListPreviewPics.Images.Count > 20) imageListPreviewPics.Images.RemoveAt(0);
             }
             string itemname = Path.GetFileNameWithoutExtension(curpriviewpic.Picpath);
-            if (string.IsNullOrEmpty(itemname))
+            if(string.IsNullOrEmpty(itemname))
             {
                 itemname = curpriviewpic.Atomtype + "_" + Path.GetFileNameWithoutExtension(curpriviewpic.ScenePath);
             }
@@ -2127,7 +2127,7 @@ namespace varManager
             int selectindex = 0;
             listViewPreviewPics.Items[selectindex].Selected = true;
             listViewPreviewPics.EnsureVisible(selectindex);
-            // if (toolStripComboBoxPreviewPage.SelectedIndex > 0) toolStripComboBoxPreviewPage.SelectedIndex = 0;
+           // if (toolStripComboBoxPreviewPage.SelectedIndex > 0) toolStripComboBoxPreviewPage.SelectedIndex = 0;
         }
 
         private void toolStripButtonPreviewPrev_Click(object sender, EventArgs e)
@@ -2146,7 +2146,7 @@ namespace varManager
 
         private void toolStripButtonPreviewNext_Click(object sender, EventArgs e)
         {
-            int selectindex = listViewPreviewPics.Items.Count - 1;
+            int selectindex = listViewPreviewPics.Items.Count-1;
             if (listViewPreviewPics.SelectedIndices.Count >= 1)
             {
                 int index = listViewPreviewPics.SelectedIndices[0];
@@ -2245,7 +2245,7 @@ namespace varManager
 
         void OldVersionVars()
         {
-            var versionLastest = varManagerDataSet.vars.Where(q => q.plugins <= 0 || q.scenes > 0 || q.looks > 0)
+            var versionLastest = varManagerDataSet.vars.Where(q=>q.plugins<=0||q.scenes>0||q.looks>0)
                                      .GroupBy(g => g.creatorName + "." + g.packageName,
                                      q => q.version,
                                      (baseName, versions) => new
@@ -2274,7 +2274,7 @@ namespace varManager
             {
                 if (installedvars.ContainsKey(oldvar))
                 {
-                    string basename = oldvar.Substring(0, oldvar.LastIndexOf("."));
+                    string basename = oldvar.Substring(0, oldvar.LastIndexOf(".") );
                     string varlastest = basename + "." + versionLastest.Where(q => q.Key == basename).First().Max.ToString();
                     File.Delete(installedvars[oldvar]);
                     VarInstall(varlastest);
@@ -2306,11 +2306,6 @@ namespace varManager
         }
 
         private void checkBoxInstalled_CheckStateChanged(object sender, EventArgs e)
-        {
-            FilterVars();
-        }
-
-        private void checkBoxScene_CheckStateChanged(object sender, EventArgs e)
         {
             FilterVars();
         }
@@ -2376,7 +2371,7 @@ namespace varManager
         public bool IsVarInstalled(string varName)
         {
             var installstatusrow = varManagerDataSet.installStatus.FindByvarName(varName);
-            if (installstatusrow != null)
+            if (installstatusrow!=null)
                 return installstatusrow.Installed;
             else
                 return false;
@@ -2388,7 +2383,7 @@ namespace varManager
             formVarDetail.strVarName = varName;
 
             formVarDetail.dependencies = new Dictionary<string, string>();
-            foreach (var dependrow in this.varManagerDataSet.dependencies.Where(q => q.varName == varName))
+            foreach(var dependrow in this.varManagerDataSet.dependencies.Where(q=>q.varName == varName))
             {
                 string existName = VarExistName(dependrow.dependency);
                 if (existName.EndsWith("$"))
@@ -2483,7 +2478,7 @@ namespace varManager
         {
             tableLayoutPanelPreview.Visible = false;
         }
-        private string curVarName = "", curEntryName = "";
+        private string curVarName = "",curEntryName="";
         private JSONClass jsonLoadScene;
         private void listViewPreviewPics_Click(object sender, EventArgs e)
         {
@@ -2830,7 +2825,7 @@ namespace varManager
 
         private void comboBoxPacksSwitch_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
             string sw = (string)comboBoxPacksSwitch.SelectedItem;
             if (!string.IsNullOrEmpty(sw))
             {
@@ -2863,7 +2858,7 @@ namespace varManager
                     }
                     else
                     {
-
+                       
                         UpdateVarsInstalled();
                         RescanPackages();
                     }
@@ -2953,7 +2948,7 @@ namespace varManager
                 }
             }
         }
-        private (string, string) SaveNameSplit(string saveName)
+        private (string,string) SaveNameSplit(string saveName)
         {
             string varname = "save", entryname = saveName;
             if (saveName.IndexOf(":/") > 1)
@@ -2995,7 +2990,7 @@ namespace varManager
             UpdateButtonClearCache();
         }
 
-        public void LoadScene(JSONClass jc, bool merge, bool ignoreGender, string characterGender, int personOrder)
+        public void LoadScene(JSONClass jc,bool merge, bool ignoreGender, string characterGender, int personOrder)
         {
             JSONArray resources = jc["resources"].AsArray;
             string saveName = "";
@@ -3023,7 +3018,7 @@ namespace varManager
                 }
                 string genderFilename = Path.Combine(sceneFolder, "gender.txt");
                 using (StreamReader srgender = new StreamReader(genderFilename))
-                    characterGender = srgender.ReadLine();
+                    characterGender= srgender.ReadLine();
                 GenLoadscenetxt(jc, merge, depends, characterGender, ignoreGender, personOrder);
             }
         }
@@ -3039,7 +3034,7 @@ namespace varManager
             }
             return inRepository;
         }
-        public void GenLoadscenetxt(JSONClass jsonLS, bool merge, List<string> dependVars, string characterGender = "female", bool ignoreGender = false, int personOrder = 1)
+        public void GenLoadscenetxt(JSONClass jsonLS,bool merge, List<string> dependVars,string characterGender="female", bool ignoreGender = false,int personOrder=1 )
         {
             JSONClass jsonls = (JSONClass)JSONNode.Parse(jsonLS.ToString());
             List<string> deletetempfiles = new List<string>();
@@ -3086,7 +3081,7 @@ namespace varManager
             if (File.Exists(loadscenefile)) File.Delete(loadscenefile);
             Directory.CreateDirectory(Path.Combine(Settings.Default.vampath, "Custom\\PluginData\\feelfar"));
             //StreamWriter sw = new StreamWriter(loadscenefile);
-
+            
 
             string strLS = jsonls.ToString("\t");
             using (FileStream fileStream = File.OpenWrite(loadscenefile))
@@ -3115,7 +3110,7 @@ namespace varManager
             {
                 if (tempfinfo.Attributes.HasFlag(FileAttributes.ReparsePoint))
                     tempfiles.Add(tempfinfo.Name.ToLower());
-                //tempfinfo.Delete();
+                    //tempfinfo.Delete();
             }
             return tempfiles;
         }
@@ -3149,7 +3144,7 @@ namespace varManager
             }
         }
 
-        public List<string> InstallTemp(string[] varNames, ref bool rescan)
+        public List<string> InstallTemp(string[] varNames,ref bool rescan)
         {
             rescan = false;
             List<string> varnames = new List<string>();
@@ -3164,7 +3159,7 @@ namespace varManager
                 if (rows.Count() > 0)
                 {
                     if (!rows.First().Installed)
-                        if (VarInstall(varname, true) == 1)
+                        if (VarInstall(varname, true) == 1) 
                             rescan = true;
                 }
                 else
@@ -3261,19 +3256,19 @@ namespace varManager
 
                 if (!Directory.Exists(atomsFoldername))
                 {
-                    ReadSaveName(saveName, "female", true);
+                    ReadSaveName(saveName, "female",true);
                 }
-
+                
                 FormAnalysis formAnalysis = new FormAnalysis();
                 formAnalysis.form1 = this;
                 formAnalysis.VarName = varName;
                 formAnalysis.EntryName = entryName;
                 if (formAnalysis.ShowDialog() == DialogResult.OK)
                 {
-
+                    
                 }
             }
-
+            
 
         }
         public static string GetCharacterGender(string character)
@@ -3296,7 +3291,7 @@ namespace varManager
             return (isMale);
         }
 
-        private static string GetAtomID(JSONNode atomitem, bool isPerson = false)
+        private static string GetAtomID(JSONNode atomitem,bool isPerson=false)
         {
             if (isPerson)
             {
@@ -3316,13 +3311,13 @@ namespace varManager
                 return atomitem["id"].Value;
         }
 
-        public bool ReadSaveName(string saveName, string characterGender, bool analysis = false)
+        public bool ReadSaveName(string saveName,string characterGender,bool analysis=false)
         {
             UseWaitCursor = true;
             string jsonscene = "";
             List<string> depends = new List<string>();
             (string varName, string entryName) = SaveNameSplit(saveName);
-            if (varName != "save")
+            if (varName!="save")
             {
                 depends.Add(varName);
                 var varsrow = varManagerDataSet.vars.FindByvarName(varName);
@@ -3350,7 +3345,7 @@ namespace varManager
             {
                 characterGender = "male";
 
-                if (jsonscene.IndexOf("/Female/") > 0 || saveName.IndexOf("/Female/") > 0)
+                if (jsonscene.IndexOf("/Female/") > 0|| saveName.IndexOf("/Female/") > 0)
                 {
                     characterGender = "female";
                 }
@@ -3371,17 +3366,17 @@ namespace varManager
             if (analysis)
             {
                 jsonscene = jsonscene.Replace("\"SELF:/", "\"" + varName + ":/");
-                AnalysisAtoms(jsonscene, sceneFolder, true);
+                AnalysisAtoms(jsonscene, sceneFolder,true);
             }
             UseWaitCursor = false;
             return true;
         }
         private static string[] sceneBaseAtoms = { "CoreControl", "PlayerNavigationPanel", "VRController", "WindowCamera" };
 
-        private static void AnalysisAtoms(string jsonscene, string sceneFolder, bool isperson)
+        private static void AnalysisAtoms(string jsonscene, string sceneFolder,bool isperson)
         {
-            JSONClass jsonnode = (JSONClass)JSON.Parse(jsonscene);
-            if (!jsonnode.HasKey("atoms"))
+            JSONClass jsonnode =(JSONClass) JSON.Parse(jsonscene);
+            if (!jsonnode.HasKey("atoms")) 
             {
                 if (isperson)
                 {
@@ -3427,8 +3422,8 @@ namespace varManager
 
             List<string> ListAtomtype = new List<string>();
             JSONArray atomArray = jsonnode["atoms"].AsArray;
-
-            Dictionary<string, List<string>> parentAtoms = new Dictionary<string, List<string>>();
+           
+            Dictionary<string, List<string>> parentAtoms=new Dictionary<string, List<string>>();
             if (atomArray.Count > 0)
             {
                 foreach (JSONClass atomitem in atomArray)
@@ -3478,19 +3473,19 @@ namespace varManager
                         }
                     }
                 }
-                if (parentAtoms.Count > 0)
+                if(parentAtoms.Count > 0)
                 {
                     string parentAtomFilename = Path.Combine(sceneFolder, "parentAtom.txt");
-                    using (StreamWriter sw = new StreamWriter(parentAtomFilename))
+                    using(StreamWriter sw= new StreamWriter(parentAtomFilename))
                     {
-                        foreach (var pa in parentAtoms)
+                        foreach(var pa in parentAtoms)
                         {
                             sw.WriteLine(pa.Key + "\t" + string.Join(",", pa.Value));
                         }
-
+                        
                     }
                 }
-
+                
             }
         }
 
@@ -3544,7 +3539,7 @@ namespace varManager
             foreach (DataGridViewRow row in varsViewDataGridView.Rows)
             {
                 string varnameinrow = row.Cells["varNamedataGridViewTextBoxColumn"].Value.ToString();
-                if (varname == varnameinrow)
+                if (varname== varnameinrow)
                 {
                     row.Selected = true;
                     if (row.Index < firstindex) firstindex = row.Index;
@@ -3568,8 +3563,8 @@ namespace varManager
 
         private void buttonFilteredMissingDepends_Click(object sender, EventArgs e)
         {
-            int varscount = varsViewDataGridView.Rows.Count;
-            string message = String.Format("Analyzing dependencies from {0} vars on the leftside of form, a processing window will be opened.", varscount);
+            int varscount= varsViewDataGridView.Rows.Count;
+            string message =String.Format( "Analyzing dependencies from {0} vars on the leftside of form, a processing window will be opened.",varscount);
 
             const string caption = "FilteredMissingDepends";
             var result = MessageBox.Show(message, caption,
@@ -3593,6 +3588,5 @@ namespace varManager
                 UpdateButtonClearCache();
             }
         }
-
     }
 }
